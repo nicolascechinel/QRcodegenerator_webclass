@@ -1,0 +1,55 @@
+<!-- https://www.npmjs.com/package/qrcode-generator  
+// Codigo a pagina de um gerador de qrcode PARA UM PARQUIMETRO com data de vencimento baseado no tempo comprado
+                        -->
+
+<html>
+    <head>
+        <script type="text/javascript" src="qrcode.js"></script>
+
+    </head>
+    <body>
+        <h1>Gerador de QRcode</h1>
+        <h2>Insira a quantidade de horas</h2>  
+        <div id="placeHolder"></div>
+        <input id="valor"/>
+        <button id="gera" onclick="gera()">Clique aqui para gerar um QRcode</button>
+        <br>
+        <br>
+        <label for="vencimento">Vencimento:</label>
+        <input type="text" id="vencimento" readonly>
+        <label for="total">Valor a pagar</label>
+        <input type="text" id="total" readonly>
+
+        <script>
+            function calculaVencimento(valor) //calcula o vencimento baseado no tempo comprado e gera uma string com a data de inicio, data final, e assinatura 65
+            {
+                var data = new Date();
+                var dataFinal = new Date();
+                dataFinal.setHours(data.getHours() + parseInt(valor));
+                var dataInicio = data.getFullYear() + '-' + (data.getMonth()+1) + '-' + data.getDate() + ' ' + data.getHours() + ':' + data.getMinutes() + ':' + data.getSeconds();
+                var dataFinal = dataFinal.getFullYear() + '-' + (dataFinal.getMonth()+1) + '-' + dataFinal.getDate() + ' ' + dataFinal.getHours() + ':' + dataFinal.getMinutes() + ':' + dataFinal.getSeconds();
+                var assinatura = '65';
+                var preco = 'R$ 2,00';
+                var total = 'R$ ' + (valor * 2) + ',00';
+                var vencimento = dataInicio + ' ' + dataFinal + ' ' + assinatura;
+                document.getElementById('vencimento').value = vencimento;
+                document.getElementById('total').value = total;
+                console.log(vencimento);
+                console.log(total);
+                
+            }
+            function gera()
+            {
+                console.log('Gerando QRcode') 
+                calculaVencimento(document.getElementById('valor').value); 
+                var typeNumber = 4;
+                var errorCorrectionLevel = 'L';
+                var qr = qrcode(typeNumber, errorCorrectionLevel);
+                qr.addData(document.getElementById('vencimento').value);
+                qr.make();
+                document.getElementById('placeHolder').innerHTML = qr.createImgTag(8,32,'qrcode');
+            }
+
+        </script>
+    </body>
+</html>
